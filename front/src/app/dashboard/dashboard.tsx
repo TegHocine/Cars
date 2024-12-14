@@ -17,7 +17,7 @@ import {
 import { Overview } from "./Overview"
 import { RecentSales } from "./recent-sales"
 
-export default function Dashboard() {
+export function Dashboard() {
   return (
     <>
       <div className='flex-1 space-y-4 p-4 md:p-8 pt-3 md:pt-6'>

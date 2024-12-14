@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Outlet } from "react-router-dom"
 
-export default function RootLayout() {
+export function RootLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />

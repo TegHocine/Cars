@@ -11,15 +11,14 @@ spring:
       ddl-auto: validate
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  flyway:
-    enabled: true
+#  flyway:
+#    enabled: true
 
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${CLIENT_ID}
+            clientSecret: ${CLIENT_SECRET}

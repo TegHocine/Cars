@@ -1,8 +1,10 @@
+import { Login } from "@/app/auth/login"
 import { Cars } from "@/app/cars/cars"
 import { CarMaintenance } from "@/app/cars/maintenance/car-maintenance"
-import Dashboard from "@/app/dashboard/dashboard"
-import RootLayout from "@/app/RootLayout"
+import { Dashboard } from "@/app/dashboard/dashboard"
+import { RootLayout } from "@/app/RootLayout"
 import { Toaster } from "@/components/ui/sonner"
+import { MutationCache, QueryClient, QueryClientProvider } from "react-query"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
@@ -25,7 +27,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Dashboard />,
+    element: <Login />,
   },
   {
     path: "/register",
@@ -33,11 +35,22 @@ const router = createBrowserRouter([
   },
 ])
 
+// Create a client
+const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onSuccess: () => {
+      queryClient.invalidateQueries()
+    },
+  }),
+})
+
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
-      <Toaster />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+      </QueryClientProvider>
     </>
   )
 }
