@@ -1,16 +1,28 @@
-import { Login } from "@/app/auth/login"
+import { LoginPage } from "@/app/auth/login"
+import { SignupPage } from "@/app/auth/signup"
 import { Cars } from "@/app/cars/cars"
 import { CarMaintenance } from "@/app/cars/maintenance/car-maintenance"
 import { Dashboard } from "@/app/dashboard/dashboard"
 import { RootLayout } from "@/app/RootLayout"
-import { Toaster } from "@/components/ui/sonner"
-import { MutationCache, QueryClient, QueryClientProvider } from "react-query"
+import { ProtectedRoute } from "@/components/protected-route"
+import { Toaster } from "@/components/ui/toaster"
+import { AuthProvider } from "@/contexts/auth-context"
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: (
+      <ProtectedRoute
+        to='/login'
+        children={<RootLayout />}
+      />
+    ),
     children: [
       {
         index: true,
@@ -27,15 +39,14 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <LoginPage />,
   },
   {
-    path: "/register",
-    element: <Dashboard />,
+    path: "/signup",
+    element: <SignupPage />,
   },
 ])
 
-// Create a client
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onSuccess: () => {
@@ -48,7 +59,9 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
         <Toaster />
       </QueryClientProvider>
     </>

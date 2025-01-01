@@ -1,10 +1,8 @@
 import { getFromLocalStorage } from "@/lib/utils"
 import axios from "axios"
 
-const baseURL = ""
-
 const api = axios.create({
-  baseURL,
+  baseURL: "/api/v1",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

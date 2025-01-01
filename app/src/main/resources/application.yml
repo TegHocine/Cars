@@ -12,13 +12,12 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
-#  flyway:
-#    enabled: true
+  flyway:
+    enabled: true
 
   security:
-    oauth2:
-      client:
-        registration:
-          google:
-            clientId: ${CLIENT_ID}
-            clientSecret: ${CLIENT_SECRET}
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration-time: ${JWT_EXPIRATION_TIME}
+
+

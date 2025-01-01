@@ -1,7 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-
-import { login } from "@/apis/auth.api"
+import { signup } from "@/apis/auth.api"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,54 +17,57 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
-import { useAuth } from "@/contexts/auth-context"
 import { useToast } from "@/hooks/use-toast"
-import { loginSchema, LoginType } from "@/types/auth.type"
+import { signupSchema, SignupType } from "@/types/auth.type"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
-export function LoginPage() {
+export function SignupPage() {
   const navigate = useNavigate()
-  const { onLogin } = useAuth()
   const { toast } = useToast()
-  const form = useForm<LoginType>({
-    resolver: zodResolver(loginSchema),
+
+  const form = useForm<SignupType>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: login,
+    mutationFn: signup,
     onError: () =>
       toast({
-        title: "Login Failed",
+        title: "Registration Failed",
         description:
-          "Invalid email or password. Please check your credentials and try again.",
+          "An error occurred while creating your account. Please try again later.",
         variant: "destructive",
       }),
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
-        title: "Login Successful",
-        description: "Welcome back! You have successfully logged in.",
+        title: "Registration Successful",
+        description:
+          "Your account has been created successfully. Welcome aboard!",
       })
-      onLogin(data)
-      navigate("/")
+      navigate("/login")
     },
   })
 
-  function onSubmit(values: LoginType) {
+  function onSubmit(values: SignupType) {
     mutate(values)
   }
 
   return (
-    <div className='flex flex-col min-h-screen h-full w-full items-center justify-center px-4'>
+    <div className='flex min-h-screen h-full w-full items-center justify-center px-4'>
       <Card className='mx-auto max-w-lg w-full'>
         <CardHeader>
-          <CardTitle className='text-2xl'>Login</CardTitle>
+          <CardTitle className='text-2xl'>Register</CardTitle>
           <CardDescription>
-            Enter your email and password to login to your account.
+            Create a new account by filling out the form below.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,6 +76,23 @@ export function LoginPage() {
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-8'>
               <div className='grid gap-4'>
+                <FormField
+                  control={form.control}
+                  name='username'
+                  render={({ field }) => (
+                    <FormItem className='grid gap-2'>
+                      <FormLabel htmlFor='username'>Full Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          id='username'
+                          placeholder='John Doe'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name='email'
@@ -100,14 +117,12 @@ export function LoginPage() {
                   name='password'
                   render={({ field }) => (
                     <FormItem className='grid gap-2'>
-                      <div className='flex justify-between items-center'>
-                        <FormLabel htmlFor='password'>Password</FormLabel>
-                      </div>
+                      <FormLabel htmlFor='password'>Password</FormLabel>
                       <FormControl>
                         <PasswordInput
                           id='password'
                           placeholder='******'
-                          autoComplete='current-password'
+                          autoComplete='new-password'
                           {...field}
                         />
                       </FormControl>
@@ -115,21 +130,42 @@ export function LoginPage() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name='confirmPassword'
+                  render={({ field }) => (
+                    <FormItem className='grid gap-2'>
+                      <FormLabel htmlFor='confirmPassword'>
+                        Confirm Password
+                      </FormLabel>
+                      <FormControl>
+                        <PasswordInput
+                          id='confirmPassword'
+                          placeholder='******'
+                          autoComplete='new-password'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button
                   type='submit'
                   className='w-full'
                   disabled={isPending}>
-                  Login
+                  Register
                 </Button>
               </div>
             </form>
           </Form>
           <div className='mt-4 text-center text-sm'>
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              to='/signup'
+              to='/login'
               className='underline'>
-              Sign up
+              Login
             </Link>
           </div>
         </CardContent>
